@@ -1,9 +1,10 @@
 import { selector } from 'recoil'
 import { taskState } from './TaskAtoms'
 import type { Task } from '../types'
+import { SelectorKeys } from '../constant/recoilKeys'
 
 export const uncompletedTasksSelector = selector<Task[]>({
-  key: 'uncompleted_task',
+  key: SelectorKeys.UNCOMPLETED_TASKS,
   get: ({ get }) => {
     return get(taskState).filter((task) => {
       return task.progressOrder != 4
@@ -12,7 +13,7 @@ export const uncompletedTasksSelector = selector<Task[]>({
 })
 
 export const completedTaskSelector = selector<Task[]>({
-  key: 'completed_task',
+  key: SelectorKeys.COMPLETED_TASKS,
   get: ({ get }) => {
     return get(taskState).filter((task) => {
       return task.progressOrder == 4
@@ -21,7 +22,7 @@ export const completedTaskSelector = selector<Task[]>({
 })
 
 export const notStartedTasksSelector = selector<Task[]>({
-  key: 'not_startes_task',
+  key: SelectorKeys.NOT_STARTED_TASKS,
   get: ({ get }) => {
     return get(taskState).filter((task) => {
       return task.progressOrder == 1
@@ -30,7 +31,7 @@ export const notStartedTasksSelector = selector<Task[]>({
 })
 
 export const inProgressTasksSelector = selector<Task[]>({
-  key: 'in_progress_task',
+  key: SelectorKeys.IN_PROGRESS_TASKS,
   get: ({ get }) => {
     return get(taskState).filter((task) => {
       return task.progressOrder == 2
@@ -39,7 +40,7 @@ export const inProgressTasksSelector = selector<Task[]>({
 })
 
 export const waitingTasksSelector = selector<Task[]>({
-  key: 'waiting_task',
+  key: SelectorKeys.WAITING_TASKS,
   get: ({ get }) => {
     return get(taskState).filter((task) => {
       return task.progressOrder == 3
