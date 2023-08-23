@@ -1,7 +1,8 @@
 import { Task, CSSProperties } from '../../../types'
 import { TASK_PROGRESS_ID } from '../../../constant/app'
-import { useRecoilState } from 'recoil'
-import { taskState } from '../../TaskAtoms'
+// import { useRecoilState } from 'recoil'
+// import { taskState } from '../../TaskAtoms'
+import { useTasksAction } from '../../hooks/Task'
 
 interface TaskCardProps {
   task: Task
@@ -31,14 +32,16 @@ const getArrowPositionStyle = (progressOrder: number): React.CSSProperties => {
 }
 
 const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
-  const [tasks, setTasks] = useRecoilState<Task[]>(taskState)
+  // const [tasks, setTasks] = useRecoilState<Task[]>(taskState)
 
-  const completeTask = (taskId: number): void => {
-    const updatedTasks: Task[] = tasks.map((task) =>
-      task.id === taskId ? { ...task, progressOrder: TASK_PROGRESS_ID.COMPLETED } : task,
-    )
-    setTasks(updatedTasks)
-  }
+  // const completeTask = (taskId: number): void => {
+  //   const updatedTasks: Task[] = tasks.map((task) =>
+  //     task.id === taskId ? { ...task, progressOrder: TASK_PROGRESS_ID.COMPLETED } : task,
+  //   )
+  //   setTasks(updatedTasks)
+  // }
+  const { completeTask } = useTasksAction()
+  const { moveTask } = useTasksAction()
   return (
     <div style={styles.taskCard}>
       <div style={styles.taskIcons}>
@@ -64,10 +67,24 @@ const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
       </div>
       <div style={getArrowPositionStyle(task.progressOrder)}>
         {task.progressOrder !== TASK_PROGRESS_ID.NOT_STARTED && (
-          <button className="material-icons">chevron_left</button>
+          <button
+            className="material-icons"
+            onClick={(): void => {
+              moveTask(task.id, -1)
+            }}
+          >
+            chevron_left
+          </button>
         )}
         {task.progressOrder !== TASK_PROGRESS_ID.COMPLETED && (
-          <button className="material-icons">chevron_right</button>
+          <button
+            className="material-icons"
+            onClick={(): void => {
+              moveTask(task.id, -1)
+            }}
+          >
+            chevron_right
+          </button>
         )}
       </div>
     </div>
