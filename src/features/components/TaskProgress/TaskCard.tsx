@@ -80,7 +80,7 @@ const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
           <button
             className="material-icons"
             onClick={(): void => {
-              moveTask(task.id, -1)
+              moveTask(task.id, 1)
             }}
           >
             chevron_right
