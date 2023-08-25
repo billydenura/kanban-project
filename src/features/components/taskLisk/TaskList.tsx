@@ -5,10 +5,53 @@ import TaskListItem from './TaskListItem'
 import type { Task, CSSProperties } from '../../../types'
 import TaskModal from '../shared/TaskModal'
 import { TASK_PROGRESS_ID, TASK_MODAL_TYPE } from '../../../constant/app'
+import FilterTaskMenu from './FilterTaskMenu'
+import { completedTaskSelector, uncompletedTasksSelector } from '../../TaskSelector'
 
 const TaskList = () => {
   const task: Task[] = useRecoilValue(taskState)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
+  const [filterType, setFilterType] = useState<string>('all')
+  const completedTask = useRecoilValue<Task[]>(completedTaskSelector)
+  const uncompletedTask = useRecoilValue<Task[]>(uncompletedTasksSelector)
+
+  // const handleFilter = (filterType:string) =>{
+  //   if(filterType=='completed'){
+  //     completedTask.map((task:Task)=>{
+  //       return <TaskListItem task={task} key={task.id} />
+  //     })
+  //   }else if(filterType=='uncompleted'){
+  //     uncompletedTask.map((task:Task)=>{
+  //       return <TaskListItem task={task} key={task.id} />
+  //     })
+  //   }else if(filterType=='all'){
+  //     task.map((task:Task)=>{
+  //       return <TaskListItem task={task} key={task.id} />
+  //     })
+  //   }
+  // }
+
+  // const handleFilter2 = {
+  //   completed: completedTask.map((task: Task) => {
+  //     return <TaskListItem task={task} key={task.id} />
+  //   }),
+  //   uncompleted: uncompletedTask.map((task: Task) => {
+  //     return <TaskListItem task={task} key={task.id} />
+  //   }),
+  //   all: task.map((task: Task) => {
+  //     return <TaskListItem task={task} key={task.id} />
+  //   }),
+  // }
+
+  // const filterState({state}){
+  //   return (
+  //     <>
+  //     {handleFilter2[state]}
+  //     </>
+  //   )
+  // }
+
   return (
     <div style={styles.container}>
       <h1 style={styles.heading}>Your Tasks</h1>
@@ -22,7 +65,16 @@ const TaskList = () => {
           <span className="material-icons">add</span>
           Add task
         </button>
-        <button style={styles.button}>
+        {isFilterOpen && (
+          <FilterTaskMenu setFilterType={setFilterType} setIsFilterOpen={setIsFilterOpen} />
+        )}
+
+        <button
+          style={styles.button}
+          onClick={(): void => {
+            setIsFilterOpen(true)
+          }}
+        >
           <span className="material-icons">sort</span>Filter tasks
         </button>
       </div>
@@ -41,9 +93,26 @@ const TaskList = () => {
           <div style={styles.tableHeaderDueDate}>Due Date</div>
           <div style={styles.tableHeaderProgress}>Progress</div>
         </div>
-        {task.map((task: Task) => {
-          return <TaskListItem task={task} key={task.id} />
-        })}
+        {/* {task
+          .filter((task) => task.progressOrder == filterType)
+          .map((task: Task) => {
+            return <TaskListItem task={task} key={task.id} />
+          })} */}
+        {/* {filterState(filterType)} */}
+
+        {filterType == 'all'
+          ? task.map((task: Task) => {
+              return <TaskListItem task={task} key={task.id} />
+            })
+          : filterType == 'completed'
+          ? completedTask.map((task: Task) => {
+              return <TaskListItem task={task} key={task.id} />
+            })
+          : filterType == 'uncompleted'
+          ? uncompletedTask.map((task: Task) => {
+              return <TaskListItem task={task} key={task.id} />
+            })
+          : null}
       </div>
     </div>
   )

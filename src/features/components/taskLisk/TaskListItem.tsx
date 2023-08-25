@@ -1,6 +1,10 @@
 import type { Task, CSSProperties } from '../../../types'
 import { TASK_PROGRESS_STATUS, TASK_PROGRESS_ID } from '../../../constant/app'
 import { useTasksAction } from '../../hooks/Task'
+import { useState } from 'react'
+import TaskMenu from '../shared/TaskMenu'
+import TaskModalEdit from '../shared/TaskModalEdit'
+import { TASK_MODAL_TYPE } from '../../../constant/app'
 
 interface TaskListItemProps {
   task: Task
@@ -38,6 +42,8 @@ const getProgressCategory = (progressOrder: number): string => {
 
 const TaskListItem = ({ task }: TaskListItemProps): JSX.Element => {
   const { completeTask } = useTasksAction()
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
   return (
     <div style={styles.tableBody}>
@@ -57,10 +63,27 @@ const TaskListItem = ({ task }: TaskListItemProps): JSX.Element => {
       <div style={styles.tableBodyDueDate}>{task.dueDate}</div>
       <div style={styles.tableBodyprogress}>{getProgressCategory(task.progressOrder)}</div>
       <div>
-        <span className="material-icons" style={styles.menuIcon}>
+        <span
+          className="material-icons"
+          style={styles.menuIcon}
+          onClick={(): void => {
+            setIsMenuOpen(true)
+          }}
+        >
           more_horiz
         </span>
       </div>
+      {isMenuOpen && (
+        <TaskMenu setIsMenuOpen={setIsMenuOpen} setIsModalOpen={setIsModalOpen} id={task.id} />
+      )}
+      {isModalOpen && (
+        <TaskModalEdit
+          headingTitle="Add your task"
+          type={TASK_MODAL_TYPE.EDIT}
+          setIsModalOpen={setIsModalOpen}
+          id={task.id - 1}
+        />
+      )}
     </div>
   )
 }
