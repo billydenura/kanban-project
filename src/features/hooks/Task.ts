@@ -11,7 +11,15 @@ interface useTaskActionType {
     detail: string,
     dueDate: string,
     progressOrder: number,
+  ) => void,
+  editTask: (
+    title: string,
+    detail: string,
+    dueDate: string,
+    progressOrder: number,
+    id:number
   ) => void
+  removeTask:(taskId:number)=>void
 }
 
 export const useTasksAction = (): useTaskActionType => {
@@ -33,6 +41,28 @@ export const useTasksAction = (): useTaskActionType => {
     )
     setTasks(updatedTasks)
   }
+  const editTask = (
+    title: string,
+    detail: string,
+    dueDate: string,
+    progressOrder: number,
+    id: number
+  ): void => {
+    const taskId = id
+    const editedTask: Task = {
+      id,
+      title,
+      detail,
+      dueDate,
+      progressOrder,
+    }    
+    const updatedTasks: Task[] = tasks.map((task) =>
+    task.id === taskId
+    ? { ...task, editedTask }
+    : task,
+    )
+    setTasks(updatedTasks)
+  }
   const addTask = (
     title: string,
     detail: string,
@@ -48,13 +78,18 @@ export const useTasksAction = (): useTaskActionType => {
     }
     setTasks([...tasks, newTask])
     
+  }  
+  const removeTask = (taskId:number):void=>{
+    const newTasks = tasks.filter((task)=>task.id != taskId)
+    setTasks(newTasks)
+    console.log("tertekan di useTaskAction")
   }
-  
-
 
   return {
     moveTask,
     completeTask,
-    addTask
+    addTask,
+    editTask,
+    removeTask
   }
 }

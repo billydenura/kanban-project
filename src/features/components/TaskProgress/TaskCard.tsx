@@ -1,8 +1,10 @@
 import { Task, CSSProperties } from '../../../types'
 import { TASK_PROGRESS_ID } from '../../../constant/app'
-// import { useRecoilState } from 'recoil'
-// import { taskState } from '../../TaskAtoms'
 import { useTasksAction } from '../../hooks/Task'
+import { useState } from 'react'
+import TaskMenu from '../shared/TaskMenu'
+import TaskModalEdit from '../shared/TaskModalEdit'
+import { TASK_MODAL_TYPE } from '../../../constant/app'
 
 interface TaskCardProps {
   task: Task
@@ -32,16 +34,11 @@ const getArrowPositionStyle = (progressOrder: number): React.CSSProperties => {
 }
 
 const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
-  // const [tasks, setTasks] = useRecoilState<Task[]>(taskState)
-
-  // const completeTask = (taskId: number): void => {
-  //   const updatedTasks: Task[] = tasks.map((task) =>
-  //     task.id === taskId ? { ...task, progressOrder: TASK_PROGRESS_ID.COMPLETED } : task,
-  //   )
-  //   setTasks(updatedTasks)
-  // }
   const { completeTask } = useTasksAction()
   const { moveTask } = useTasksAction()
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+
   return (
     <div style={styles.taskCard}>
       <div style={styles.taskIcons}>
@@ -54,7 +51,13 @@ const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
         >
           check_circle
         </div>
-        <div className="material-icons" style={styles.menuIcon}>
+        <div
+          className="material-icons"
+          style={styles.menuIcon}
+          onClick={(): void => {
+            setIsMenuOpen(true)
+          }}
+        >
           more_vert
         </div>
       </div>
@@ -87,6 +90,17 @@ const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
           </button>
         )}
       </div>
+      {isMenuOpen && (
+        <TaskMenu setIsMenuOpen={setIsMenuOpen} setIsModalOpen={setIsModalOpen} id={task.id} />
+      )}
+      {isModalOpen && (
+        <TaskModalEdit
+          headingTitle="Add your task"
+          type={TASK_MODAL_TYPE.EDIT}
+          setIsModalOpen={setIsModalOpen}
+          id={task.id - 1}
+        />
+      )}
     </div>
   )
 }
